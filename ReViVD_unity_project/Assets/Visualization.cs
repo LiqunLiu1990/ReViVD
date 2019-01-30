@@ -84,6 +84,7 @@ public abstract class Visualization : MonoBehaviour {
             p.mesh = new Mesh();
             filter.sharedMesh = p.mesh;
             MeshRenderer renderer = o.AddComponent<MeshRenderer>();
+            o.AddComponent<MeshCollider>();  //mesh collider for raycasting
             renderer.sharedMaterial = material;
             p.GenerateMesh();
         }

@@ -8,28 +8,29 @@ public class Raycasting : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        GameObject cubetohit = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cubetohit.transform.position = new Vector3(10, 40, 50);
+        //cubetohit.AddComponent<MeshCollider>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 debut = new Vector3(0, 0, 0);
-        Vector3 fin = new Vector3(5, 5, 5);
+        Vector3 start = new Vector3(0, 0, 0);
+        Vector3 end = new Vector3(10,40,50);
 
-        //Ray rayon = new Ray(debut, fin);
-        //Debug.DrawRay(debut, fin, Color.yellow);
-          
         RaycastHit hit;
-        // Does the ray intersect any objects excluding the player layer
-        if (Physics.Raycast(debut, fin, out hit, Mathf.Infinity))
+        // Does the ray intersect any objects
+        if (Physics.Raycast(start, end, out hit, Mathf.Infinity))
         {
-            Debug.DrawRay(debut, fin* hit.distance, Color.yellow);
-            Debug.Log("Did Hit");
+            Debug.DrawRay(start, end* hit.distance, Color.yellow);
+            Debug.Log("hit");
+            Debug.Log(hit.point);
         }
-        else
+        else 
         {
-            Debug.DrawRay(debut, fin * 1000, Color.white);
+            Debug.DrawRay(start, end * 1000, Color.white);
             Debug.Log("Did not Hit");
         }
 
