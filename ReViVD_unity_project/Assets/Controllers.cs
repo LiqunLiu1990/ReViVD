@@ -1,32 +1,38 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.WSA.Input;
+using UnityEngine.XR;
 
 public class Controllers : MonoBehaviour
 {
+    GameObject leftHand;
+    GameObject rightHand;
+
     // Start is called before the first frame update
     void Start()
     {
-
-        GameObject controller_left = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        controller_left.transform.position = new Vector3(-1, 2, 0);
-
-        GameObject controller_right = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        controller_right.transform.position = new Vector3(1, 2, 0);
-
-        var interactionSourceStates = InteractionManager.GetCurrentReading();
-        foreach (var interactionSourceState in interactionSourceStates) {
-                }
-
-
+        leftHand = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        leftHand.transform.localScale = new Vector3(0.1f, 0.1f, 0.2f);
+        leftHand.transform.parent = Camera.main.transform.parent;
+        rightHand = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        rightHand.transform.localScale = new Vector3(0.1f, 0.1f, 0.2f);
+        rightHand.transform.parent = Camera.main.transform.parent;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(Input.GetJoystickNames()[0]);
-        Debug.Log(Input.GetJoystickNames()[1]);
+        leftHand.transform.localRotation = InputTracking.GetLocalRotation(XRNode.LeftHand);
+        leftHand.transform.localPosition = InputTracking.GetLocalPosition(XRNode.LeftHand) + new Vector3(0, 2, 0) - (0.1f * leftHand.transform.forward);
+        rightHand.transform.localRotation = InputTracking.GetLocalRotation(XRNode.RightHand);
+        rightHand.transform.localPosition = InputTracking.GetLocalPosition(XRNode.RightHand) + new Vector3(0, 2, 0) - (0.1f * rightHand.transform.forward);
 
     }
 }
+
+/* Notes :
+ * InputTracking.GetLocalPosition(XRNode.Head) == Camera.main.transform.localPosition - new Vector3(0, 2, 0)
+ * Ceci ne dépend pas de la position de cameraHolder.
+ * 
+ * 
+ */
