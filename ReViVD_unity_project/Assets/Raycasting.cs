@@ -34,8 +34,8 @@ public class Raycasting : MonoBehaviour
 
 
         Vector3 start = new Vector3(3, -1, 3);
-        Vector3 end = new Vector3(100 * Mathf.Cos(2 * Mathf.PI * Time.time / 50), 50, 100 * Mathf.Sin(2 * Mathf.PI * Time.time / 50));
-        //Vector3 end = new Vector3(3, 1, 3);
+        //Vector3 end = new Vector3(100 * Mathf.Cos(2 * Mathf.PI * Time.time / 50), 50, 100 * Mathf.Sin(2 * Mathf.PI * Time.time / 50));
+        Vector3 end = new Vector3(100, 50, 100);
         
 
 
