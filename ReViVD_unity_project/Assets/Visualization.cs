@@ -80,12 +80,13 @@ public abstract class Visualization : MonoBehaviour {
             GameObject o = new GameObject(p.ID);
             o.transform.parent = transform;
             p.transform = o.transform;
-            MeshFilter filter = o.AddComponent<MeshFilter>();
             p.mesh = new Mesh();
+            MeshFilter filter = o.AddComponent<MeshFilter>();
             filter.sharedMesh = p.mesh;
             MeshRenderer renderer = o.AddComponent<MeshRenderer>();
-            o.AddComponent<MeshCollider>();  //mesh collider for raycasting
             renderer.sharedMaterial = material;
+            p.collider = o.AddComponent<MeshCollider>();
+            //p.collider.sharedMesh = p.mesh;
             p.GenerateMesh();
         }
         CreateDistricts();
@@ -342,6 +343,7 @@ public abstract class Visualization : MonoBehaviour {
 public abstract class Path {
     public string ID;
     public Mesh mesh;
+    public MeshCollider collider;
     public Transform transform;
     public Dictionary<int, float> specialRadii = new Dictionary<int, float>();
     public float baseRadius = 0.1f;
@@ -460,6 +462,9 @@ public abstract class Path {
         mesh.vertices = vertices;
         mesh.colors32 = colors;
         mesh.RecalculateBounds();
+
+        collider.sharedMesh = mesh;
+        
     }
 
     public abstract IReadOnlyList<Atom> AtomsAsBase { get; }
