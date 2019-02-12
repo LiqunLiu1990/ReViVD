@@ -50,16 +50,25 @@ public class AirTrafficVisualization : TimeVisualization {
 
     bool doTime = false;
 
-    private void Start() {
-        if (!LoadFromCSV("data_aviation")) {
+    private void Awake(){
+        name = "airTraffic";
+        if (!LoadFromCSV("data_aviation"))
+        {
             return;
         }
+
         AirTrafficPath p = Paths[GetPathIndex("60")];
         int c = p.AtomsAsBase.Count;
         for (int i = 0; i < c; i += 2)
             p.specialRadii.Add(i, 0.3f);
 
         InitializeRendering();
+    }
+
+
+    private void Start() {
+
+
 
         startTime = Time.time;
     }
