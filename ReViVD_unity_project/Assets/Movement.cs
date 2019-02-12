@@ -23,7 +23,7 @@ public class Movement : MonoBehaviour {
     void Start () {
         camTrans = transform.GetChild(0);
         visu = GameObject.Find("airTraffic").GetComponent<TimeVisualization>();
-        pathToFollow = visu.PathsAsTime[visu.GetPathIndex("28")];
+        pathToFollow = visu.PathsAsTime[visu.GetPathIndex("29")];
     }
 
     void PrintVect(Vector3 vect) {
@@ -64,8 +64,7 @@ public class Movement : MonoBehaviour {
             Vector3 pos;
             int index = 0;
 
-            while (pathToFollow.AtomsAsTime[index].time < timeSinceFollow)
-            {
+            while (pathToFollow.AtomsAsTime[index].time <= timeSinceFollow){
                 index += 1;
             }
 
@@ -74,30 +73,22 @@ public class Movement : MonoBehaviour {
 
             pointa = pathToFollow.AtomsAsTime[index];
 
-            if (index < pathToFollow.AtomsAsTime.Count-1)
-            {
+            if (index < pathToFollow.AtomsAsTime.Count-1){
                 pointb = pathToFollow.AtomsAsTime[index + 1];
+
+                float deltaTimePoints = pointb.time - pointa.time;
+                float deltaTime = (timeSinceFollow - pointa.time);
+                pos = pointa.point + deltaTime / deltaTimePoints * (pointb.point - pointa.point);
+                Debug.Log(index);
+                Debug.Log(pos);
+                transform.position = pos;
+
             }
             else
             {
-                pointb = pathToFollow.AtomsAsTime[index];
                 followPath = false;
+                transform.position = pointa.point;
             }
-
-            Debug.Log("pointa");
-            Debug.Log(pointa.point);
-
-            Debug.Log("pointb");
-            Debug.Log(pointb.point);
-
-            float deltaTimePoints = pointb.time - pointa.time;
-            float deltaTime = (timeSinceFollow - pointa.time);
-            pos = pointa.point + deltaTime / deltaTimePoints * (pointb.point - pointa.point);
-
-            Debug.Log("pos");
-            Debug.Log(pos);
-            transform.position = pos;
-          
         }
         else
         {
