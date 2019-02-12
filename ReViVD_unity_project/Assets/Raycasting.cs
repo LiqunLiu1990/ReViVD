@@ -34,8 +34,8 @@ public class Raycasting : MonoBehaviour
 
 
         Vector3 start = new Vector3(3, -1, 3);
-        //Vector3 end = new Vector3(100 * Mathf.Cos(2 * Mathf.PI * Time.time / 50), 50, 100 * Mathf.Sin(2 * Mathf.PI * Time.time / 50));
-        Vector3 end = new Vector3(100, 50, 100);
+        Vector3 end = new Vector3(100 * Mathf.Cos(2 * Mathf.PI * Time.time / 50), 50, 100 * Mathf.Sin(2 * Mathf.PI * Time.time / 50));
+        //Vector3 end = new Vector3(100, 50, 100);
         
 
 
@@ -48,8 +48,8 @@ public class Raycasting : MonoBehaviour
             for (int i = 0; i < hits.Length; i++)
             {
                 //Debug.Log("hit");
-                //Debug.Log(hits[i].collider.gameObject.name);
-                //Debug.Log(hits[i].collider.transform.parent.gameObject.name);
+                Debug.Log(hits[i].collider.gameObject.name);
+                Debug.Log(hits[i].collider.transform.parent.gameObject.name);
             }
         }
         else
