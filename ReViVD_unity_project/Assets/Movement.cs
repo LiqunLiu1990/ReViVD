@@ -23,7 +23,16 @@ public class Movement : MonoBehaviour {
     void Start () {
         camTrans = transform.GetChild(0);
         visu = GameObject.Find("airTraffic").GetComponent<TimeVisualization>();
-        pathToFollow = visu.PathsAsTime[visu.GetPathIndex("29")];
+        pathToFollow = visu.PathsAsTime[visu.GetPathIndex("34")];
+
+        /*int index = 0;
+        foreach (TimeAtom a in pathToFollow.AtomsAsTime) {
+            Debug.Log(index);
+            Debug.Log(a.point);
+            Debug.Log(a.time);
+            index += 1;
+        }*/
+
     }
 
     void PrintVect(Vector3 vect) {
@@ -40,55 +49,79 @@ public class Movement : MonoBehaviour {
             
         }
         if (followPath){
-            
 
-            Vector3 camRot = Time.deltaTime * (horizontalSensitivity * Input.GetAxis("Right_Hori") * camTrans.up + verticalSensitivity * (invertVerticalControl ? -1 : 1) * Input.GetAxis("Right_Vert") * camTrans.right);
-            Vector2 touchPos = new Vector2(Input.GetAxis("Right_Touch_Hori"), -Input.GetAxis("Right_Touch_Vert"));
-            if (!oldTouchPos.Equals(Vector2.zero) && !touchPos.Equals(Vector2.zero))
-            {
-                trimToDo += trimSensitivity * Vector2.SignedAngle(oldTouchPos, touchPos);
-            }
-            oldTouchPos.Set(touchPos.x, touchPos.y);
-            if (trimToDo != 0)
-            {
-                float step = Mathf.Max(Mathf.Min(trimToDo, maxTrimVelocity * Time.deltaTime), -maxTrimVelocity * Time.deltaTime);
-                camRot += step * camTrans.forward;
-                trimToDo -= step;
-            }
-            transform.Rotate(camRot, Space.World);
-
-            float timeSinceFollow = (Time.time - startTimeToFollow)*60;
-
-
-
+            TimeAtom point1;
+            TimeAtom point2;
+            int index;
             Vector3 pos;
-            int index = 0;
-
-            while (pathToFollow.AtomsAsTime[index].time <= timeSinceFollow){
+            float timeSinceFollow;
+            timeSinceFollow = (Time.time - startTimeToFollow) * 60;
+            index = 0;
+            while (pathToFollow.AtomsAsTime[index].time <=timeSinceFollow) {
                 index += 1;
             }
 
-            TimeAtom pointa;
-            TimeAtom pointb;
-
-            pointa = pathToFollow.AtomsAsTime[index];
-
-            if (index < pathToFollow.AtomsAsTime.Count-1){
-                pointb = pathToFollow.AtomsAsTime[index + 1];
-
-                float deltaTimePoints = pointb.time - pointa.time;
-                float deltaTime = (timeSinceFollow - pointa.time);
-                pos = pointa.point + deltaTime / deltaTimePoints * (pointb.point - pointa.point);
-                Debug.Log(index);
-                Debug.Log(pos);
-                transform.position = pos;
-
+            point1 = pathToFollow.AtomsAsTime[index];
+            if (index < pathToFollow.AtomsAsTime.Count-1) {
+                point2 = pathToFollow.AtomsAsTime[index + 1];
             }
-            else
-            {
-                followPath = false;
-                transform.position = pointa.point;
+            else {
+                point2 = pathToFollow.AtomsAsTime[index];
             }
+
+            pos = point1.point + (point2.point - point1.point) * (timeSinceFollow - point1.time) / (point2.time - point1.time);
+
+            Debug.Log(index);
+            Debug.Log(pos);
+            
+            transform.position = pos;
+
+
+            //compute interpolation
+
+
+            /* Vector3 camRot = Time.deltaTime * (horizontalSensitivity * Input.GetAxis("Right_Hori") * camTrans.up + verticalSensitivity * (invertVerticalControl ? -1 : 1) * Input.GetAxis("Right_Vert") * camTrans.right);
+             Vector2 touchPos = new Vector2(Input.GetAxis("Right_Touch_Hori"), -Input.GetAxis("Right_Touch_Vert"));
+             if (!oldTouchPos.Equals(Vector2.zero) && !touchPos.Equals(Vector2.zero))
+             {
+                 trimToDo += trimSensitivity * Vector2.SignedAngle(oldTouchPos, touchPos);
+             }
+             oldTouchPos.Set(touchPos.x, touchPos.y);
+             if (trimToDo != 0)
+             {
+                 float step = Mathf.Max(Mathf.Min(trimToDo, maxTrimVelocity * Time.deltaTime), -maxTrimVelocity * Time.deltaTime);
+                 camRot += step * camTrans.forward;
+                 trimToDo -= step;
+             }
+             transform.Rotate(camRot, Space.World);*/
+
+
+            /* float timeSinceFollow = (Time.time - startTimeToFollow);
+
+             Vector3 pos;
+             int index = 0;
+             while (pathToFollow.AtomsAsTime[index].time <= timeSinceFollow){
+                 index += 1;
+             }
+             TimeAtom pointa;
+             TimeAtom pointb;
+             pointa = pathToFollow.AtomsAsTime[index];
+             pointb = pathToFollow.AtomsAsTime[index + 1];
+             float deltaTimePoints = pointb.time - pointa.time;
+             float deltaTime = (timeSinceFollow - pointa.time);
+             pos = pointa.point + deltaTime / deltaTimePoints * (pointb.point - pointa.point);
+             Debug.Log(index);
+             Debug.Log(pos);
+             transform.position = pos;
+
+             if (index < pathToFollow.AtomsAsTime.Count-1){
+             }
+             else
+             {
+                 followPath = false;
+                 transform.position = pointa.point;
+             }
+             */
         }
         else
         {
