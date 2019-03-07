@@ -24,15 +24,6 @@ public class Movement : MonoBehaviour {
         camTrans = transform.GetChild(0);
         visu = GameObject.Find("airTraffic").GetComponent<TimeVisualization>();
         pathToFollow = visu.PathsAsTime[visu.GetPathIndex("34")];
-
-        /*int index = 0;
-        foreach (TimeAtom a in pathToFollow.AtomsAsTime) {
-            Debug.Log(index);
-            Debug.Log(a.point);
-            Debug.Log(a.time);
-            index += 1;
-        }*/
-
     }
 
     void PrintVect(Vector3 vect) {
@@ -42,11 +33,14 @@ public class Movement : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        if (Input.GetKey(KeyCode.Return))
+        if (Input.GetKey(KeyCode.Return)&&followPath==false)
         {
             followPath = true;
-            startTimeToFollow = Time.time;
+            startTimeToFollow = Time.time; 
             
+        }
+        if (Input.GetKey(KeyCode.Space )){
+            followPath = false;
         }
         if (followPath){
 
@@ -55,29 +49,29 @@ public class Movement : MonoBehaviour {
             int index;
             Vector3 pos;
             float timeSinceFollow;
-            timeSinceFollow = (Time.time - startTimeToFollow) * 60;
+            timeSinceFollow = (Time.time - startTimeToFollow)* 60 + pathToFollow.AtomsAsTime[0].time;
             index = 0;
-            while (pathToFollow.AtomsAsTime[index].time <=timeSinceFollow) {
-                index += 1;
-            }
 
-            point1 = pathToFollow.AtomsAsTime[index];
-            if (index < pathToFollow.AtomsAsTime.Count-1) {
-                point2 = pathToFollow.AtomsAsTime[index + 1];
+
+            if (timeSinceFollow < pathToFollow.AtomsAsTime[pathToFollow.AtomsAsTime.Count-1].time) {
+                while (index<(pathToFollow.AtomsAsTime.Count - 1) && pathToFollow.AtomsAsTime[index].time <= timeSinceFollow) {
+                    index += 1;
+                }
+
+                point1 = pathToFollow.AtomsAsTime[index-1];
+                point2 = pathToFollow.AtomsAsTime[index];
+
+                pos = point1.point + (point2.point - point1.point) * (timeSinceFollow - point1.time) / (point2.time - point1.time);
+                transform.position = pos;
             }
             else {
-                point2 = pathToFollow.AtomsAsTime[index];
+                pos = pathToFollow.AtomsAsTime[pathToFollow.AtomsAsTime.Count - 1].point;
+                transform.position = pos;
+                followPath = false;
             }
 
-            pos = point1.point + (point2.point - point1.point) * (timeSinceFollow - point1.time) / (point2.time - point1.time);
-
-            Debug.Log(index);
-            Debug.Log(pos);
             
-            transform.position = pos;
 
-
-            //compute interpolation
 
 
             /* Vector3 camRot = Time.deltaTime * (horizontalSensitivity * Input.GetAxis("Right_Hori") * camTrans.up + verticalSensitivity * (invertVerticalControl ? -1 : 1) * Input.GetAxis("Right_Vert") * camTrans.right);
@@ -95,33 +89,6 @@ public class Movement : MonoBehaviour {
              }
              transform.Rotate(camRot, Space.World);*/
 
-
-            /* float timeSinceFollow = (Time.time - startTimeToFollow);
-
-             Vector3 pos;
-             int index = 0;
-             while (pathToFollow.AtomsAsTime[index].time <= timeSinceFollow){
-                 index += 1;
-             }
-             TimeAtom pointa;
-             TimeAtom pointb;
-             pointa = pathToFollow.AtomsAsTime[index];
-             pointb = pathToFollow.AtomsAsTime[index + 1];
-             float deltaTimePoints = pointb.time - pointa.time;
-             float deltaTime = (timeSinceFollow - pointa.time);
-             pos = pointa.point + deltaTime / deltaTimePoints * (pointb.point - pointa.point);
-             Debug.Log(index);
-             Debug.Log(pos);
-             transform.position = pos;
-
-             if (index < pathToFollow.AtomsAsTime.Count-1){
-             }
-             else
-             {
-                 followPath = false;
-                 transform.position = pointa.point;
-             }
-             */
         }
         else
         {
